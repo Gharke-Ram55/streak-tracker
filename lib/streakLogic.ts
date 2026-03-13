@@ -1,0 +1,36 @@
+export function calculateStreak(dates: string[]) {
+
+  if (dates.length === 0) {
+    return {
+      streak: 0,
+      lastDate: null
+    };
+  }
+
+  const sortedDates = [...dates].sort().reverse();
+
+  let streak = 1;
+
+  for (let i = 1; i < sortedDates.length; i++) {
+
+    const prev = new Date(sortedDates[i - 1]);
+    const curr = new Date(sortedDates[i]);
+
+    const diff =
+      (prev.getTime() - curr.getTime()) /
+      (1000 * 60 * 60 * 24);
+
+    if (diff === 1) {
+      streak++;
+    } else {
+      break;
+    }
+
+  }
+
+  return {
+    streak,
+    lastDate: sortedDates[0]
+  };
+
+}
