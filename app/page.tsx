@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Heatmap from "@/components/Heatmap";
 import { Flame, CalendarDays, BarChart3 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Home() {
 
@@ -74,6 +76,8 @@ export default function Home() {
     loadData();
   }, []);
 
+  const progress = Math.min((streak / 30) * 100, 100);
+
   return (
 
     <div className="min-h-screen bg-[#0F172A] text-white p-10">
@@ -84,11 +88,15 @@ export default function Home() {
 
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
 
-        <div className="bg-slate-800/60 backdrop-blur-lg p-6 rounded-xl shadow-xl text-center">
+        <motion.div
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="bg-slate-800/60 backdrop-blur-lg p-6 rounded-xl shadow-xl text-center"
+        >
           <Flame className="mx-auto text-orange-400 mb-3" size={40} />
           <h2 className="text-lg text-gray-300">Current Streak</h2>
           <p className="text-4xl font-bold text-orange-400">{streak}</p>
-        </div>
+        </motion.div>
 
         <div className="bg-slate-800/60 backdrop-blur-lg p-6 rounded-xl shadow-xl text-center">
           <BarChart3 className="mx-auto text-blue-400 mb-3" size={40} />
@@ -100,6 +108,43 @@ export default function Home() {
           <CalendarDays className="mx-auto text-green-400 mb-3" size={40} />
           <h2 className="text-lg text-gray-300">Last Studied</h2>
           <p className="text-lg text-green-400">{lastDate ?? "Never"}</p>
+        </div>
+
+      </div>
+
+      <div className="flex justify-center mt-12">
+
+        <div className="relative w-40 h-40">
+
+          <svg className="w-full h-full transform -rotate-90">
+
+            <circle
+              cx="80"
+              cy="80"
+              r="70"
+              stroke="#334155"
+              strokeWidth="12"
+              fill="transparent"
+            />
+
+            <circle
+              cx="80"
+              cy="80"
+              r="70"
+              stroke="#22c55e"
+              strokeWidth="12"
+              fill="transparent"
+              strokeDasharray={440}
+              strokeDashoffset={440 - (440 * progress) / 100}
+              strokeLinecap="round"
+            />
+
+          </svg>
+
+          <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">
+            {Math.round(progress)}%
+          </div>
+
         </div>
 
       </div>
@@ -121,7 +166,8 @@ export default function Home() {
 
       </div>
 
-    </div>
+      <Heatmap />
 
+    </div>
   );
 }
